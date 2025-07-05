@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Barkati Clothing Stores</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #fafafa;
+    }
+    .header {
+      background: linear-gradient(90deg, black, gold);
+      color: white;
+      padding: 15px 30px;
+    }
+    .hero {
+      background: url('CoverBanner.jpeg') center/cover no-repeat;
+      color: black;
+      text-align: center;
+      padding: 120px 30px;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      color: white;
+    }
+    .hero p {
+      font-size: 1.2rem;
+    }
+    .product-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+    .product-card:hover {
+      transform: scale(1.02);
+    }
+    .product-card img {
+      height: 200px;
+      object-fit: cover;
+    }
+    .product-card .card-body {
+      text-align: center;
+    }
+    footer {
+      background: black;
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .btn-cart {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header d-flex justify-content-between align-items-center">
+    <div>
+      <h1 class="h4 m-0">Barkati Clothing Stores</h1>
+      <p class="m-0">Shop No: Q 120 / Q 121, Carousel Shopping Complex, Kafue Road, Lusaka, Zambia</p>
+    </div>
+    <a href="checkout.html" class="btn btn-outline-light">
+      <i class="fas fa-shopping-cart"></i> View Cart <span id="cartCount" class="badge bg-danger">0</span>
+    </a>
+  </div>
+
+  <!-- Hero Banner -->
+  <section class="hero">
+    <h1></h1>
+    <p>.</p>
+    <a href="#products" class="btn btn-warning mt-3">Shop Now</a>
+  </section>
+
+  <!-- Featured Products -->
+  <section id="products" class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Featured Products</h2>
+      <div class="row" id="productContainer"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Barkati Clothing Stores | Developed by MD Tech</p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const products = [
+      { id: 1, name: "Cozy Pants", price: 150, image: "Pants.jpeg" },
+      { id: 2, name: "Jeans", price: 180, image: "Jeans.jpeg" },
+      { id: 3, name: "Hoodies", price: 120, image: "Hoodie.jpeg" },
+      { id: 4, name: "Sweaters", price: 100, image: "SweatersTops.jpeg" }
+    ];
+
+    let cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
+
+    function renderProducts() {
+      const container = document.getElementById("productContainer");
+      container.innerHTML = "";
+      products.forEach((product) => {
+        const card = document.createElement("div");
+        card.className = "col-md-3 mb-4";
+        card.innerHTML = `
+          <div class="card product-card shadow-sm">
+            <img src="${product.image}" class="card-img-top" alt="${product.name}" />
+            <div class="card-body">
+              <h5 class="card-title">${product.name}</h5>
+              <p class="card-text">ZMW ${product.price}</p>
+              <button class="btn btn-primary w-100" onclick="addToCart(${product.id})">Add to Cart</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      const existingItem = cart.find(item => item.id === productId);
+
+      if (existingItem) {
+        existingItem.qty += 1;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+
+      sessionStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+    }
+
+    function updateCartCount() {
+      const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cartCount').textContent = totalItems;
+    }
+
+    // On page load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+      updateCartCount();
+    });
+  </script>
+</body>
+</html>
